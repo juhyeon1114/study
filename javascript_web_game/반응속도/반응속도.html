@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+	<meta charset="utf-8">
+	<title>hi</title>
+	<style>
+		#screen {
+			width:500px;
+			height: 300px;
+			user-select: none;
+			text-align: center;
+			font-size: 36px;
+			font-weight: bold;
+		}
+		#screen.waiting {
+			background-color: aqua;
+		}
+
+		#screen.ready {
+			background-color: red;
+		}
+
+		#screen.now {
+			background-color: greenyellow;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="screen" class="waiting">
+		클릭해서 시작
+	</div>
+	<div id="rate">
+		
+	</div>
+
+	<script src="./반응속도.js"></script>
+</body>
+</html>

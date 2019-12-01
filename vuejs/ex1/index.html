@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <meta charset="UTF-8">
+    <title>hi</title>
+    <!-- 개발버전 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 상용버전 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> --> 
+</head>
+<body>
+    <div id="root">
+        <div v-if="liked">좋아요</div>
+        <button v-else v-on:click="onClickButton">like</button>
+        
+    </div>
+</body>
+<script>
+    const app = new Vue({
+        el: "#root",
+        data:{
+            liked: false, // 뷰가 관리하게 하고 싶은 변수들
+        },
+        methods:{
+            onClickButton(){
+                this.liked = true;
+                
+            },
+        },
+    });
+</script>
+</html>

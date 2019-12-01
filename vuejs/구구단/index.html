@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <meta charset="UTF-8">
+    <title>hi</title>
+    <!-- 개발버전 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 상용버전 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> --> 
+</head>
+<body>
+    <div id="root">
+        <div id="Q">{{first}} x {{second}} = ?</div>
+        <div>
+            <form v-on:submit="doSubmit">
+                <input type="text" v-model="value" ref="answer"><button type="submit">입력</button>
+            </form>
+        </div>
+        <div id="result">{{result}}</div>
+    </div>
+</body>
+<script>
+    const app = new Vue({
+        el: "#root",
+        data:{
+            first: Math.ceil(Math.random() * 9),
+            second: Math.ceil(Math.random() * 9),
+            value: "",
+            result: "",
+        },
+        methods:{
+            doSubmit(e){
+                e.preventDefault();
+                if(this.first*this.second === parseInt(this.value)){
+                    this.result = "정답";
+                    this.first = Math.ceil(Math.random() * 9);
+                    this.second = Math.ceil(Math.random() * 9);
+                    this.value = "";
+                } else {
+                    this.value = "";
+                    this.result = "땡";
+                }
+                this.$refs.answer.focus();
+                /*
+                    $refs는 DOM에 접근할 수 있는 객체이다.
+                    접근하고 싶은 html 태그에 ref 속성을 추가해주면,
+                    vue에서 그 태그에 DOM에 접근할 수 있게 된다.
+                    (***하지만, 개발자가 DOM에 접근하는 것은 비추)
+                */
+            },
+        },
+    });
+</script>
+</html>

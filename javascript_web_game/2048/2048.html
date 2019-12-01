@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <meta charset="UTF-8">
+    <title>2048</title>
+    <style>
+        #table {
+            border-collapse: collapse;
+            user-select: none;
+        }
+        #table td {
+            border: 5px solid black;
+            width: 150px;
+            height: 150px;
+            font-size: 50px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .scoreBoard {
+            user-select: none;
+            font-size:50px;
+        }
+    </style>
+</head>
+<body>
+
+    <table id="table"></table>
+    <div class="scoreBoard">score : <span id="score">0</span></div>
+    
+
+<script src="./2048.js"></script>
+</body>
+</html>
