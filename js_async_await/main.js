@@ -22,7 +22,8 @@ myAsync().then((result)=>{
 */
 
 /*
-    [await]   
+    [await]
+    promise가 resolve되기를 기다리는 것.
     await은 async 함수 내에서 사용됨.
     await이 붙은 함수가 일반함수라면, await은 제 기능을 하지 않고 그냥 비동기적으로 동작함.
     await이 붙은 함수가 promise를 리턴하는 함수라면, 그 함수가 resolve가 된 후에 아래의 코드를 읽어나간다.
