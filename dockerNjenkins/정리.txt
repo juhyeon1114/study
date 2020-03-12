@@ -1,0 +1,143 @@
+--------------------우분투 서버에 도커 설치-----------------
+*df -h
+    -> 현재 메모리를 얼마나 사용가능한지 볼 수 있음
+
+*sudo apt-get update
+    -> apt-get 명령어를 사용하기 위함
+
+*sudo apt install apt-transport-https
+*sudo apt install ca-certificates
+*sudo apt install curl
+*sudo apt install software-properties-common
+    -> 필요한 패키지들
+
+*curl -fsSl https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    -> 도커를 설치하기위한 gpg 다운로드
+
+*sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+    -> 레포지토리에서 도커 다운로드
+
+*sudo apt update
+    -> 위의 결과들을 업데이트함 = apt list 에 도커를 다운받을 수 있는 경로가 추가됨
+
+*apt-cache policy docker-ce
+*sudo apt install docker-ce
+    -> 도커 설치
+
+--------------------주피터 노트북 설치-----------------
+*sudo apt-get update
+*sudo apt-get install python3-pip
+*sudo pip3 install notebook
+*python3
+    >>> from notebook.auth import password
+    >>> passwd()
+    >>> 패스워드 입력
+    >>> exit()
+*jupyter notebook --generate-config
+    -> config파일의 경로 나옴
+*vi 에디터로 해당 config파일 가장 아래에 작성
+c = get_config()
+c.NotebookApp.password = u'sha1:c8058981deeb:731af1fe49582444b4298847c974b9a2ab55ffb1'
+c.NotebookApp.ip = '172.31.47.62'
+c.NotebookApp.notebook_dir = '/'
+*sudo jupyter-notebook --allow-root 
+    -> 이후 aws에서 해당 포트를 열어주면 접속 가능
+*ctrl+z
+*bg
+*disown -h
+    -> 백그라운드에서 실행, 소유권 포기
+
+--------------------php & mysql 서버-----------------
+*docker build -t example .
+    -> 도커파일을 읽어서 example 이라는 태그로 이미지를 하나 만듬
+
+*docker run -p 80:80 
+    -> 예제에서는 컨테이너의 80번 포트를 아파치로 연결해두었으므로 호스트 피씨의 80포트로 접속했을 때, 컨테이너의 80포트로 연결되게 함
+    
+*docker run -p 80:80 -v /home/ubuntu/example/html:/var/www/html example
+    -> -v 호스트pc의 경로:컨테이너의 경로
+    -> /var/www/html = php의 기본적인 경로
+
+*docker run -d -p 9876:3306 -e MYSQL_ROOT_PASSWORD=password mysql:5.6
+    -> -e = 환경변수
+
+*docker exec -it 컨테이너 bash
+    -> 해당 컨테이너에 접속
+
+*docker inspect 컨테이너
+    -> 해당 컨테이너의 세부 정보를 알 수 있다.
+    -> MYSQL같은 경우 MYSQL컨테이너의 IP를 알 수 있다.
+
+*mysql -u root -p --host 172.17.0.2 --port 3306
+    -> 컨테이너 외부에서 컨테이너의 mysql에 접속
+*mysql -u root -p --host 127.0.0.1 --port 9876
+    -> 로컬 pc의 9876포트와 mysql컨테이너를 연결했으므로 위와 같은 명령어로도 데이터베이스에 접속 가능
+
+*docker run -p 80:80 -v /home/ubuntu/example/html:/var/www/html example
+    -> 로컬 pc의 home/ubuntu/example/html 파일과 컨테이너의 파일을 연결
+
+--------------------DockerHub & GitHub-----------------
+*docker hub의 레포지토리와 git hub의 레포지토리를 연결하면
+docker hub에서 해당 git 레포지토리를 자동으로 빌드 해준다.
+
+*돜헙과 깃헙을 연동하게 되면 로컬 pc의 docker 이미지들은 필요없게되므로 모두 삭제해도 됨
+
+--------------------Jenkins-----------------
+*docker pull jenkins 
+    -> 구버전
+*docker pull jenkins/jenkins:lts
+    -> 신버전
+*docker run -d -p 8080:8080 -v /home/jenkins:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -u root jenkins
+    -> 젠킨스 컨테이너에서 php컨테이너를 띄우는 방식으로 진행할 것임. (Docker in Docker 구조)
+*docker logs 컨테이너id
+    -> 젠킨스는 로그에 패스워드를 보여줌
+
+*젠킨스 프로젝트 만들기
+    -> 8080포트로 접속한 후 계정생성하고 로그인
+    -> 프리스타일 프로젝트로 새로운 프로젝트 생성
+    -> 해당 프로젝트의 설정 중, build shell 에 아래의 스크립트 작성
+    docker pull juhyeon1114/docker-practice
+    docker run -p 80:80 -v /home/docker-practice/project:/var/www/html juhyeon1114/docker-practice
+*위의 과정만으로 build now 하면 docker를 찾을 수 없다는 에러가 뜸
+    -> jenkins 컨테이너에 docker 컨테이너 설치해야함
+
+--------------------Jenkins에 도커설치-----------------
+*docker exec -it 젠킨스 컨테이너 id bash
+
+*curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz
+    -> 도커 실행 파일 압축 파일 설치
+*tar xzvf docker-17.04.0-ce.tgz
+    -> 도커 실행 파일 압축 풀기
+*mv docker/docker /usr/local/bin
+    -> 도커 실행 파일을 bin 폴더로 이동
+*rm -r docker docker-17.04.0-ce.tgz
+    -> 압축파일은 불필요하므로 삭제
+*docker login
+    -> private 레포지토리에도 접근해야하므로 로그인하기
+
+*cd /home
+*git clone https://github.com/juhyeon1114/docker-practice
+
+*그 후 젠킨스 프로젝트를 빌드하면 성공적으로 빌드가 됨
+
+--------------------Jenkins로 원격 빌드-----------------
+*build 탭에서 Execute shell의 스크립트를 아래와 같이 변경
+    cd /home/docker-practice
+    git pull
+    docker rm -f php || true
+    docker pull juhyeon1114/docker-practice
+    docker run -p 80:80 -v /home/docker-practice/project:/var/www/html --name php juhyeon1114/docker-practice
+*추가적으로 '빌드 유발'을 원격에서 허용하고, 토큰을 입력해준다.
+
+*추가적으로 젠킨스 내부에 도커 계정을 로그인해주어야함
+    -> 젠킨스 컨테이너 접속 -> 도커 프로젝트 폴더로 이동 -> git config --global credential.helper "cache --timeout 7200"
+    -> git pull 명령어 입력 후 계정 입력 -> 두 시간동안 계정정보가 남아있게 됨(비추)
+    (원래는 깃헙에서 엑세스 토큰을 발행하는 방식을 사용)
+    (깃헙->프로필->settings->developer settings->personal access token->generate new token->repository, repo:hook에 체크
+    -> 생성된 엑세스 토큰을 git pull 할때 비밀번호 대신 넣어줌)
+    -> 이제 원격 빌드 세팅이 완료됨
+
+*젠킨스 프로젝트 설정에 토큰을 입력한 부분에 아래와 같은 원격 빌드 주소를 확인할 수 있음
+    ->JENKINS_URL/job/example/build?token=TOKEN_NAME or /buildWithParameters?token=TOKEN_NAME
+    (http://3.21.76.67:8080/job/example/build?token=rebuild_token)
+    ->이제 해당 url에 접속하는 것만으로도 원격으로 빌드가 가능함
