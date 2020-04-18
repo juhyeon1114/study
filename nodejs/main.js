@@ -160,4 +160,7 @@ pm2 monit -> pm2로 실행되고 있는 프로그램들을 모니터링할 수 �
 pm2 list -> 프로그램들 list 보여줌
 pm2 stop [이름]
 pm2 -h
+pm2 kill -> 모든 pm2 프로세스 종료
+pm2 start app.js --watch --no-daemon -> 백그라운드에서 돌아가는 프로그램을 daemon이라고 함. 즉, daemon이 아닌 상태로 실행하는 것을 의미(pm2 실행 + log보기)
+pm2 start app.js --watch --ignore-watch="data/* sessions/*" --no-daemon -> data 디렉토리와 sessions 디렉토리에 있는 모든 파일에 대해 crud가 발생해도 프로세스를 재시작하지 않음
 */

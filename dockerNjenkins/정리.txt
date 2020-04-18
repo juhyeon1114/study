@@ -1,4 +1,4 @@
---------------------우분투 서버에 도커 설치-----------------
+--------------------1우분투 서버에 도커 설치-----------------
 *df -h
     -> 현재 메모리를 얼마나 사용가능한지 볼 수 있음
 
@@ -24,12 +24,12 @@
 *sudo apt install docker-ce
     -> 도커 설치
 
---------------------주피터 노트북 설치-----------------
+--------------------2주피터 노트북 설치-----------------
 *sudo apt-get update
 *sudo apt-get install python3-pip
 *sudo pip3 install notebook
 *python3
-    >>> from notebook.auth import password
+    >>> from notebook.auth import passwd
     >>> passwd()
     >>> 패스워드 입력
     >>> exit()
@@ -47,7 +47,7 @@ c.NotebookApp.notebook_dir = '/'
 *disown -h
     -> 백그라운드에서 실행, 소유권 포기
 
---------------------php & mysql 서버-----------------
+--------------------4php & mysql 서버-----------------
 *docker build -t example .
     -> 도커파일을 읽어서 example 이라는 태그로 이미지를 하나 만듬
 
@@ -76,13 +76,19 @@ c.NotebookApp.notebook_dir = '/'
 *docker run -p 80:80 -v /home/ubuntu/example/html:/var/www/html example
     -> 로컬 pc의 home/ubuntu/example/html 파일과 컨테이너의 파일을 연결
 
---------------------DockerHub & GitHub-----------------
+--------------------7DockerHub & GitHub-----------------
 *docker hub의 레포지토리와 git hub의 레포지토리를 연결하면
 docker hub에서 해당 git 레포지토리를 자동으로 빌드 해준다.
 
 *돜헙과 깃헙을 연동하게 되면 로컬 pc의 docker 이미지들은 필요없게되므로 모두 삭제해도 됨
 
---------------------Jenkins-----------------
+1. 서버의 특정 디렉토리에 Dockerfile과 소스코드를 작성한다.
+2. github에 올린다.
+3. dockerhub에서 해당 git repository를 연결한다.
+4. 그러면 git에 push할 때마다 자동으로 새로운 이미지를 만들어준다.
+5. github에서 README.md 를 작성해준다
+
+--------------------8Jenkins-----------------
 *docker pull jenkins 
     -> 구버전
 *docker pull jenkins/jenkins:lts
@@ -141,3 +147,39 @@ docker hub에서 해당 git 레포지토리를 자동으로 빌드 해준다.
     ->JENKINS_URL/job/example/build?token=TOKEN_NAME or /buildWithParameters?token=TOKEN_NAME
     (http://3.21.76.67:8080/job/example/build?token=rebuild_token)
     ->이제 해당 url에 접속하는 것만으로도 원격으로 빌드가 가능함
+
+
+
+------------------------------------------------------
+<?php
+    $conn = mysqli_connect(
+        'docker-mysql-test.ckylbtsb4qnk.us-east-2.rds.amazonaws.com',
+        'user',
+        'password',
+        'TEST',
+        '3306'
+    );
+    if (mysqli_connect_errno()) {
+        echo "failed to connect to MySQL: ".mysqli_connect_error();
+    }
+    $sql = "SELECT VERSION()";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_array($result);
+    print_r($row["VERSION()"]);
+?>
+-------------------------------------------------------
+# Docker 실전 연습 예제입니다.
+### Installation
+<pre>
+cd /home
+git clone https://github.com/juhyeon1114/docker-practice
+cd docker-practice
+</pre>
+### Run
+<pre>
+# Login For Private Docker Repository
+docker login
+docker pull juhyeon1114/docker-practice
+docker run -p 80:80 -v /home/docker-practice/project:/var/www/html juhyeon1114/docker-practice
+</pre>
+-------------------------------------------------------
