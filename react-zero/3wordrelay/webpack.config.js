@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     name: 'word-relay-setting',
     mode: 'development', // 실서비스 : production
-    devtool: 'eval',
+    devtool: 'eval', //hidden-source-map
     resolve: {
         extensions: ['.js', '.jsx']
     },
@@ -12,7 +12,7 @@ module.exports = {
      * 입력
      */
     entry: {
-        app: ['./client.jsx'],
+        app: ['./client'],
     },
 
     /**
