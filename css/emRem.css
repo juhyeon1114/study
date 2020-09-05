@@ -1,0 +1,9 @@
+/* 
+    em = 즉, 부모에 지정된 폰트 사이즈를 나타내는 단위 
+    (브라우저의 기본 폰트 사이즈는 16px. 따러서, 1em = 16px)
+    rem = 루트에 지정된 폰트 사이즈를 나타내는 단위 
+*/
+#emRem .parent {font-size:2em;} /* 부모의 폰트사이즈 X 2 = 16 X 2 = 32 */
+#emRem .child {font-size:1em;} /* 부모의 폰트사이즈 X 1 = 32 X 1 = 32 */
+#emRem .parent.-rem {font-size:2rem;} /* 루트 폰트사이즈 X 2 = 16 X 2 = 32 */
+#emRem .child.-rem {font-size:1rem;} /* 루트 폰트사이즈 X 1 = 16 X 1 = 32 */

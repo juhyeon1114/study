@@ -1,0 +1,73 @@
+/*
+    flex box
+        1. container에 적용할 수 있는 속성
+            - display
+            - flex-direction
+            - flex-wrap
+            - flex-flow
+            - justify-content
+            - align-items
+            - align-content
+        2. item에 적용할 수 있는 속성
+            - order
+            - flex-grow
+            - flex-shrink
+            - flex
+            - align-self
+        3. main axis VS cross axis
+            - 수직이 main이면 수평은 cross
+            - 수평이 main이면 수직은 cross
+        
+*/
+/*setting*/
+.container { background-color:beige; height:100vh;}
+.item {width:100px; height:100px;}
+.item.-red{background-color:red;}
+.item.-blue{background-color:blue;}
+.item.-green{background-color:green;}
+.item.-yellow{background-color:yellow;}
+.item.-orange{background-color:orange;}
+.item.-salmon{background-color:salmon;}
+.item.-purple{background-color:purple;}
+.item.-skyblue{background-color:skyblue;}
+.item.-pink{background-color:pink;}
+.item.-indigo{background-color:indigo;}
+.item.-teal{background-color:teal;}
+/*flex*/
+.container{
+    display: flex;
+
+    flex-direction: row; /*default*/
+    /* flex-direction: row-reverse; */
+    /* flex-direction:column; */
+    /* flex-direction:column-reverse; */
+
+    flex-wrap: nowrap; /*default*/
+    flex-wrap: wrap;
+
+    /* flex-flow: column nowrap;  */
+
+    /* justify-content: flex-start;   
+    justify-content: flex-end;
+    justify-content: center;
+    justify-content: space-around;
+    justify-content: space-between; */
+
+    /* align-items: center;
+    align-items: baseline;
+
+    align-content: space-between; */
+    align-content: center;
+}
+
+.item {
+    flex-grow: 1;
+    flex-shrink: 1;
+
+    flex-basis: content;
+    flex-basis: 10%;
+    flex-basis: auto;
+
+    align-self: auto;
+}
+

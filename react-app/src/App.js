@@ -7,6 +7,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      mode: 'read',
+      welcome: {title:'welcome', desc: 'Hello, React!!'},
       subject: {title: 'WEB', sub: 'World Wide Web!'},
       contents: [
         {id:1, title:'html', desc: 'HTML is a markup language...'},
@@ -16,12 +18,20 @@ class App extends Component {
     };
   }
   render() {
+    var _title = this.state.contents[0].title;
+    var _desc = this.state.contents[0].desc;
+    var mode = this.state.mode;
+    if (mode && this.state[mode]) {
+      _title = this.state[mode].title;
+      _desc = this.state[mode].desc;
+    }
+
     return (
       <div className="App">
         <Subject title={this.state.subject.title} sub={this.state.subject.sub}></Subject>
         <Subject title="React" sub="hello react"></Subject>
         <Nav data={this.state.contents}></Nav>
-        <Article title="HTML" content="HTML is not a computer language, but a markup language "></Article>
+        <Article title={_title} content={_desc}></Article>
       </div>
     )
   }
