@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     name: 'word-relay-setting',
@@ -23,11 +24,26 @@ module.exports = {
             test: /\.jsx?/, // js, jsx파일에 규칙을 적용한다
             loader: 'babel-loader', // 그 규칙은 '바벨'의 룰을 적용한다.
             options: { // 바벨이 사용할 옵션들
-                presets: ['@babel/preset-env', '@babel/preset-react'],
-                plugins: ['@babel/plugin-proposal-class-properties'],
+                presets: [
+                    ['@babel/preset-env', {
+                        targets: {
+                            browsers: ['> 5% in KR'],
+                        },
+                        debug: true,
+                    }],
+                    '@babel/preset-react'
+                ],
+                plugins: [
+                    '@babel/plugin-proposal-class-properties',
+                    'react-hot-loader/babel'
+                ],
             }
         }]
     },
+
+    plugins: [
+        new webpack.LoaderOptionsPlugin({ debug: true })
+    ],
 
     /**
      * 출력
@@ -35,6 +51,7 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'app.js',
+        publicPath: '/dist/'
     }
 };
 
