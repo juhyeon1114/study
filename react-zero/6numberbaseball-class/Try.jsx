@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import TryList from './TryList';
 
-class Try extends Component {
+class Try extends PureComponent {
 
     render() {
         return (

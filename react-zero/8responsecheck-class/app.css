@@ -1,0 +1,14 @@
+body {margin:0;}
+#root {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:100vh;
+    flex-direction: column;
+}
+
+#screen {width:300px; height: 300px; text-align:center; cursor: pointer; user-select: none; font-weight: bold; font-size:24px;}
+#screen.waiting {background-color: lightblue;}
+#screen.ready {background-color:green}
+#screen.now {background-color:red;}
+
