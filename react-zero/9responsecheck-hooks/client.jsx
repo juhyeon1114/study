@@ -6,6 +6,6 @@ const { default: ResponseCheck } = require('./ResponseCheck');
 
 const Hot = hot(ResponseCheck);
 
-ReactDom.render(<Hot />, document.querySelector('#root'));
+ReactDom.render(<><Hot /><Hot /><Hot /></>, document.querySelector('#root'));
 
  
