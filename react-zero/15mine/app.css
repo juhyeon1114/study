@@ -1,0 +1,26 @@
+body {margin:0;}
+#root {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:100vh;
+    flex-direction: column;
+}
+
+td {
+    border: 2px solid black;
+    width : 40px;
+    height: 40px;
+    cursor: pointer;
+    text-align: center;
+    font-size:64px;
+    user-select: none;
+    vertical-align: middle;
+}
+td:hover {
+    background-color: coral;
+}
+
+table {
+    border-collapse: collapse;
+}
