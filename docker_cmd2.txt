@@ -1,0 +1,90 @@
+* docker run -t -i -p 8080:80 -v <image> bash <호스트 dir>:<컨테이너 dir>
+  ex) docker run -t -i -p 8080:80 -v c://Users/example:/var/www/example.com/public_html linode/lamp bash
+	-> -t : 터미널 모드로 사용하겠다는 의미
+	-> -i : 컨테이너가 표준 입력을 받을 수 있게 하는 옵션
+	-> 8080:80 : 호스트 컴퓨터의 8080포트를 도커 컨테이너의 80포트에 연결
+	-> bash : 해당 컨테이너의 bash 실행
+
+* docker stats : 실행중인 컨테이너에 대한 cpu사용률, 메모리 사용량 등의 정보를 같이 보여줌
+* docker ps : 실행중인 컨테이너 보여줌
+* docker ps -a : 생성된 모든 컨테이너 보여줌
+
+* docker start <container 1> <container 2> ... : 컨테이너 실행
+* docker stop <container 1> <container 2> ... : 컨테이너 중지
+* docker rm <container 1> <container 2> ... : 컨테이너 삭제 (컨테이너가 중지되어 있어야 삭제 가능)
+
+* docker images : 도커가 다운로드한 이미지 목록을 보여줌
+* docker pull <image> : 이미지 다운로드.
+* docker rmi <image 1> <image 2> ... : 이미지 삭제
+
+* docker logs <container's id> : 생성된 컨테이너의 로그를 확인
+* docker logs --tail 10 <container's id> : 생성된 컨테이너의 로그를 끝에서 10개 확인
+* docker logs -f <container's id> : 실시간으로 log가 생성되는 것을 확인할 수 있다. (로그보기 중지: ctrl + c)
+
+* docker stop $(docker ps -a -q) : 모든 컨테이너 중지
+* docker rm $(docker ps -a -q) : 모든 컨테이너 삭제
+* docker rmi $(docker images -q) : 모든 이미지 삭제
+* docker rm $(docker ps --filter 'status=exited' -a -q) : exit상태의 모든 컨테이너 삭제
+
+--------------------------------------------------------------------------------
+[wordpress 돌리기]
+
+1) 원하는 버전의 mysql image를 다운받고 컨테이너를 돌린다.
+>> docker run -d --name mysql -v mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=wordpress -e MYSQL_DATABASE=wordpress -e MYSQL_USER=wordpress -e MYSQL_PASSWORD=wordpress mysql:5.7
+	-> -d : 컨테이너를 백그라운드 실행, 이 옵션을 안 넣어주면 실행상태에서 바로 꺼진 상태로 들어가게 됨
+	-> -name : 이미지의 이름
+	-> -e : 환경 변수 값
+	-> -v <호스트 경로>:/var/lib/mysql  : 호스트 경로에 mysql의 db생성 (윈도우 os는 호스트 경로를 절대 경로로 써주어야함)
+	-> *MYSQL_ROOT_PASSWORD : mysql의 root 암호
+	-> MYSQL_DATABASE : 컨테이너의 이미지를 시작 하면서 지정한 데이터베이스를 생성
+	-> MYSQL_USER, MYSQL_PASSWORD : mysql사용자 아이디와 암호
+	-> MYSQL_ALLOW_EMPTY_PASSWORD : yes 로 설정해 놓으면 root의 패스워드가 비어서 실행됨 (권장x)
+
+2) 원하는 버전의 wordpress를 다운받고 위에서 만든 mysql과 linking해서 컨테이너를 돌린다
+>> docker run -d --name wordpress -v wordpress:/var/www/html --link mysql:mysql -e WORDPRESS_DB_HOST=mysql:3306 -e WORDPRESS_DB_PASSWORD=wordpress -p 8080:80 wordpress:5.2.2-php7.1-apache
+	-> link <컨테이너A 이름>:<별칭> : 컨테이너A와 연결
+-------------------------------------------------------------------------------
+[도커 이미지 저장(백업)하는 법]
+
+1) docker hub 이용
+>> docker login
+	-> 아이디, 비번 입력
+>> docker push <계정>/<돜헙 안의 폴더명> : 이 명령어를 사용하기 위해선 image의 tag를 변경해주어야한다.
+	-> docker tag <image id> <계정>/<돜헙 안의 폴더명>
+>> docker pull <계정>/<돜헙 안의 폴더명> : 돜헙에서 다운로드
+
+2) .tar파일로 로컬에 저장 (현재 속해 있는 디렉토리에서 아래 명령들을 수행함)
+>> docker save <image name> > <파일명.tar>
+>> docker load --input <파일명.tar>
+
+-----------------------------------------------------------------------------
+[kitematic]
+-> mysql 환경 변수
+*MYSQL_ROOT_PASSWORD : mysql의 root 암호
+MYSQL_DATABASE : 컨테이너의 이미지를 시작 하면서 지정한 데이터베이스를 생성
+MYSQL_USER, MYSQL_PASSWORD : mysql사용자 아이디와 암호
+MYSQL_ALLOW_EMPTY_PASSWORD : yes 로 설정해 놓으면 root의 패스워드가 비어서 실행됨 (권장x)
+
+-> wordpress 환경 변수
+WORDPRESS_DB_HOST=mysql:3306 : <alias>:<port>
+WORDPRESS_DB_PASSWORD
+WORDPRESS_DB_NAME : schema 이름. 해당 schema가 없으면 생성 후 연결함.
+
+-> ***주의 사항
+워드프레스에서 mysql을 link할 때 "alias" 주의.(mysql로 해야하는 듯)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

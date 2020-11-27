@@ -1,0 +1,143 @@
+* image (이미지)
+  -> 컨테이너 실행에 필요한 파일과 설정값등을 포함하고 있는 것
+
+* contaiber (컨테이너)
+  -> 하나의 격리된 프로세스
+
+* 도커허브 : 
+https://hub.docker.com/
+-------------------------------------------------------------------- 40
+* docker run <image> : 컨테이너 실행하기
+  ex) docker run ununtu:16.04
+* docker run -t -i <image> bash : -t는 터미널 모드로 사용하겠다는 의미. -i 는 컨테이너가 표준 입력을 받을 수 있게 하는 옵션
+			       해당하는 컨테이너의 bash를 실행함.
+* docker run -t -i -p 8080:80 <image> bash : 호스트 컴퓨터의 8080포트를 도커 컨테이너의 80포트에 연결해서 다시 생성
+* docker run -t -i -p 8080:80 -v <image> bash <호스트 dir>:<컨테이너 dir>
+  ex) docker run -t -i -p 8080:80 -v c://Users/example:/var/www/example.com/public_html linode/lamp bash
+* 컨테이너에 들어간 후 service apache2 start -> 아파치 실행. localhost:8080에서 확인 가능
+
+* docker stats : 실행중인 컨테이너에 대한 cpu사용률, 메모리 사용량 등의 정보를 같이 보여줌
+* docker ps : 실행중인 컨테이너 보여줌
+* docker ps -a : 생성된 모든 컨테이너 보여줌
+
+* docker start <container 1> <container 2> ... : 컨테이너 실행
+* docker stop <container 1> <container 2> ... : 컨테이너 중지
+* docker rm <container 1> <container 2> ... : 컨테이너 삭제 (컨테이너가 중지되어 있어야 삭제 가능)
+
+* docker images : 도커가 다운로드한 이미지 목록을 보여줌
+* docker pull <image> : 이미지 다운로드. run 과의 차이점은 pull은 최신 버전으로 다운 받음.
+* docker rmi <image 1> <image 2> ... : 이미지 삭제
+
+* docker logs <container's id> : 생성된 컨테이너의 로그를 확인
+* docker logs --tail 10 <container's id> : 생성된 컨테이너의 로그를 끝에서 10개 확인
+* docker logs -f <container's id> : 실시간으로 log가 생성되는 것을 확인할 수 있다. (로그보기 중지: ctrl + c)
+
+* docker-compose up : 도커 compose 이용하기
+  -> docker-compose.yml 파일을 만들고 해당 디렉토리에서 위의 명령을 입력하면, yml 파일에 서술한 대로
+      이미지와 컨테이너를 만듬.
+
+* docker-compose down : 도커 compose 종료하기
+
+* docker stop $(docker ps -a -q) : 모든 컨테이너 중지
+* docker rm $(docker ps -a -q) : 모든 컨테이너 삭제
+* docker rmi $(docker images -q) : 모든 이미지 삭제
+* docker rm $(docker ps --filter 'status=exited' -a -q) : exit상태의 모든 컨테이너 삭제
+------------------------------------------------------------------------------------
+
+* Dockerfile 로 개발 환경을 공유받은 경우
+  -> 위 파일을 개발 디렉토리로 옮긴 후 docker build 명령을 하면, 도커 이미지 생성
+  -> 나머지 과정은 위의 과정들과 동일
+
+* example
+FROM ubuntu:18.04
+MAINTAINER juhyeon <money1994@naver.com>
+
+# Avoiding user interaction with tzdata
+ENV DEBIAN-FRONTEND=noninteractive
+
+RUN apt-get update
+RUN apt-get install -y apache2
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:ondrej/php #for installing php 5.6
+RUN apt-get update
+RUN apt-get install -y php5.6
+
+EXPOSE 80
+
+CMD ["apachectl", "-D", "FOREGROUND"]
+------------------------------------------------------------------------------------
+
+* docker-compose up <service name> : 생성/실행
+* docker-compose stop <service name> : 중지
+* docker-compose rm <service name> : 삭제
+
+* yml 파일은 스페이스바 두 번이 다른 내용을 의미함.(similar with Python)
+
+*[ docker compose example]
+
+version: '3'
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./docker/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=sampledb
+      - POSTGRES_USER=sampleuser
+      - POSTGRES_PASSWORD=samplesecret
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile-dev
+    environment:
+      - DJANGO_DEBUG=True
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_PORT=5432
+      - DJANGO_DB_NAME=sampledb
+      - DJANGO_DB_USERNAME=sampleuser
+      - DJANGO_DB_PASSWORD=samplesecret
+      - DJANGO_SECRET_KEY=dev_secret_key
+    ports:
+      - "8000:8000"
+    command: 
+      - python manage.py runserver 0:8000
+    volumes:
+      - ./:/app/
+
+* version : '3' -> 파일 규격 버전.  쉽게 얘기하면 docker compose 파일의 버전
+* sevices : -> 이 항목 밑에 실행하려는 컨테이너(서비스)들을 정의함
+* db: -> 컨테이너(서비스)의 이름을 db로 정의함
+* image: -> db컨테이너에서 사용할 이미지를 정의함
+* volumes: -> docker run 으로 컨테이너를 실행할 때 --volume 옵션을 사용하여 데이터베이스의 데이터를
+	      로컬 컴퓨터에 저장하는 것과 같음.
+* environment: -> docker run 에서 -e 옵션과 같음
+
+* django: -> 앱 컨테이너(서비스)의 이름을 django로 정의
+* build: -> db 서비스와 달리 앱 서비스는 특정 이미지 대신 build 옵션을 추가함.
+* context: -> build명령을 실행할 디렉터리 경로
+* dockerfile: -> '개발용' 도커 이미지를 빌드하는 데 사용할 dockerfile을 지정해주면 됨
+
+* ports: -> docker run 에서 -p 옵션과 같음. 포트 설정
+
+---------------------------------------------------------------------
+* docker를 이용해서 간단히 이미지 만들기
+  -> 운영체제 이미지를 설치하고 그 이미지의 컨테이너에 접속한 후에 php나 mysql과 같은 것들을 설치해준 후에
+      커밋을 해서 하나의 컨테이너로 만든다.
+  -> ubuntu
+	- apt-get update : 패키지 목록 갱신
+	- apt-get upgrade : 모든 패키지를 최신 버전으로
+	- apt-get install php : 패키지 설치
+	- apt-get remove php : 패키지 제거
+	- apt-get purge php : 패키지 삭제, 설정파일은 유지
+	- apt-cache search php : php를 포함한 패키지 검색
+	- apt-get -h : apt-get 명령어의 사용법, 옵션 출력
+
+
+* docker commit [options] <container name> [image name]
+  -> 옵션
+  -> -a, --author="" : 생성자 정보
+  -> -m, --message="" : 이미지 메시지
+  -> -p, --pause=true/false : 이미지를 생성할 때 컨테이너를 중지한 뒤 commit 여부

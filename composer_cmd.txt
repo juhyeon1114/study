@@ -1,0 +1,19 @@
+* composer = 라이브러리(패키지)를 편리하게 설치, 관리, 공유할 수 있다.
+
+* composer를 다운 받으면 composer.phar 이라는 파일이 생기고,
+composer.phar 이 있는 dir에서 php composer.phar 이라는 명령어로 composer를 실행할 수 있다.
+(composer.phar이 있는 dir은 모두 composer를 실행할 수 있다.)
+(http://packagist.org -> 라이브러리 설치할 수 있는 사이트)
+
+* 라이브러리를 설치하면 vendor라는 폴더에 설치가 됨.
+* autoload.php를 이용하면 설치하고 싶은 라이브러리가 의존하고 있는 다른 라이브러리들도 같이 설치해줌
+(require_once __DIR__ . '/vendor/autoload.php';)
+
+*composer.lock : 실제로 현재 프로젝트에 설치된 라이브러리의 버전이 기록된 파일 
+composer.json : 라이브러리의 의존성을 정의한 파일
+	==> 이 두 파일을 공유하면 어디에서든 같은 버전의 라이브러리를 사용할 수 있다.
+	(composer install : 위의 두 파일을 참고해서 라이브러리 설치)
+
+
+================================================================
+
