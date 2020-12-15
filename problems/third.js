@@ -4,8 +4,8 @@
  */
 const ROW = 10;
 const COL = 10;
-let currentCol = 0;
-let currentRow = 0;
+let currentCol = 2;
+let currentRow = 2;
 const DIRECTION = [
     'north west', 'north', 'north east',
     'west',                     'east',
@@ -51,11 +51,11 @@ const gameOver = () => { // array에 0이 있다 ? false : true;
     return finish;
 }
 
+arr[currentRow][currentCol] += 1;
 while(true) {
-    arr[currentRow][currentCol] += 1; // 현재위치에 += 1
-
     const check = randomWalk();
     if (check.canIMove) { // 랜덤으로 선택한 다음칸이 움직여도 되는 곳인 경우
+        arr[currentRow][currentCol] += 1; // 현재위치에 += 1
         currentRow = check.nextRow;
         currentCol = check.nextCol;
 
