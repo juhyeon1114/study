@@ -23,4 +23,4 @@ const calcResult = (cnt) => {
     console.log(`${cnt}번째 숫자는 ${num}이다`);
 }
 
-calcResult(1000000);
+calcResult(999);
