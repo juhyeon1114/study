@@ -3,10 +3,6 @@
  * https://codingdojang.com/scode/401?answer_mode=hide
  */
 
-let INPUT_CNT = 1000000;
-let num = 0;
-let count = 0;
-
 // return 앞뒤가 똑같다 ? true : false
 const isThisTenet = (inputNum) => {
     const halfLength = Math.floor(inputNum.length/2);
@@ -16,11 +12,15 @@ const isThisTenet = (inputNum) => {
     return leftside === rightside;
 };
 
-console.time();
-while(true) {
-    String(num).length === 1 || isThisTenet(String(num)) ? count += 1 : {} ; // 1자리 숫자거나 앞뒤가 똑같은 숫자면 count ++
-    if (count >= INPUT_CNT) break; // gameover
-    num ++; // 계속 진행해야하면 숫자 하나 더해주기
+const calcResult = (cnt) => {
+    let num = 0;
+    let count = 0;
+    while(true) {
+        String(num).length === 1 || isThisTenet(String(num)) ? count += 1 : {} ; // 1자리 숫자거나 앞뒤가 똑같은 숫자면 count ++
+        if (count >= cnt) break; // gameover
+        num ++; // 계속 진행해야하면 숫자 하나 더해주기
+    }
+    console.log(`${cnt}번째 숫자는 ${num}이다`);
 }
-console.timeEnd();
-console.log(`${INPUT_CNT}번째 숫자는 ${num}이다`);
+
+calcResult(1000000);
