@@ -1,0 +1,51 @@
+﻿Loop
+{
+pwb := ComObjCreate("InternetExplorer.Application") ;
+pwb.Visible := 1
+pwb.Navigate("http://a.sabangnet.co.kr/") ;
+sleep 7000 ;open webpage and wait untill page is completly loaded
+
+document:=pwb.document ;
+while(true){
+	if (document.querySelector(".userId") <> "null") {
+		break ;
+	}	
+}
+document.querySelector(".userId").value:= "meemi1" ;input the id
+document.querySelector(".userPw").value:= "tmtmdsla1!" ;input the pw
+sleep 100 ;
+document.querySelector(".bt_login").click() ;login
+sleep 3000 ; 
+
+document.location.href:= "/order/Order_collect" ;go to order collection page
+sleep 500 ;
+
+while(true){
+	if (document.querySelector("table.value2") <> "null") {
+		document.querySelector("table.value2").querySelectorAll("input[type='checkbox']")[0].click() ;
+		sleep 100 ;
+		document.querySelector("table.value2").querySelectorAll("input[type='checkbox']")[1].click() ;
+		sleep 100 ;
+		document.querySelector("table.value2").querySelectorAll("input[type='checkbox']")[2].click() ; check the checkboxes
+		sleep 100 ;
+		break ;
+	}	
+}
+sleep 1000 ;
+
+;document.querySelector("img[value='수집처리(정상)']").click() ;get orders
+
+sleep 1000 ;
+
+document.location.href:= "/logout.html" ;logout
+sleep 500 ;
+
+
+Process,Close,iexplore.exe ;close IE
+sleep 6000*2 ; 60sec*2 (2min)
+
+}
+
+Escape::ExitApp ;
+
+

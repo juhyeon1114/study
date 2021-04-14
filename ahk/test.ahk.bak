@@ -1,0 +1,13 @@
+
+	sleep 2000
+	Send, {Space}
+	sleep 500
+	Send, {Right}
+	sleep 500
+	Send, {Left}
+	sleep 1000
+	Send, {Enter}
+	sleep 1000
+	Send, {Space}
+	
+	ExitApp
